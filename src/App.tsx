@@ -4,7 +4,7 @@ import './App.scss';
 
 import { useEffect, useState } from 'react';
 
-import * as postsService from './api/posts';
+import * as postsService from './api/api';
 
 import { UserSelector } from './components/UserSelector';
 import { User } from './types/User';
@@ -43,18 +43,20 @@ export const App = () => {
 
   function loadUsersPosts(userId: number) {
     setPostsIsLoading(true);
+    setErrorMessage(Errors.Empty);
 
     postsService
       .getUserPosts(userId)
       .then(resolve => setUserPosts(resolve))
       .catch(() => {
-        setErrorMessage(Errors.Users);
+        setErrorMessage(Errors.Posts);
       })
       .finally(() => setPostsIsLoading(false));
   }
 
   function loadPostComments(postId: number) {
     setCommentsIsLoading(true);
+    setErrorMessage(Errors.Empty);
 
     postsService
       .getPostComments(postId)
@@ -69,6 +71,7 @@ export const App = () => {
 
   function addComment(comment: Omit<Comment, 'id'>) {
     setIsSubmiting(true);
+    setErrorMessage(Errors.Empty);
 
     return postsService
       .addComment(comment)
@@ -78,7 +81,7 @@ export const App = () => {
       .catch(error => {
         setErrorMessage(Errors.addComment);
 
-        throw new Error(error);
+        throw error;
       })
       .finally(() => {
         setIsSubmiting(false);
