@@ -22,7 +22,7 @@ export const UserSelector: React.FC<Props> = ({
 
   const toggleDropdown = () => setHiddenUsers(prev => !prev);
 
-  const onClickToSelect = (user: User) => {
+  const handleSelectUser = (user: User) => {
     onSelectUser(user);
     setHiddenUsers(true);
     onSelectPost(null);
@@ -76,7 +76,7 @@ export const UserSelector: React.FC<Props> = ({
               className={classNames('dropdown-item', {
                 'is-active': user.id === selectedUser?.id,
               })}
-              onClick={() => onClickToSelect(user)}
+              onClick={() => handleSelectUser(user)}
             >
               {user.name}
             </a>

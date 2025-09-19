@@ -25,44 +25,50 @@ export const App = () => {
 
   const [postsIsLoading, setPostsIsLoading] = useState(false);
   const [commentsIsLoading, setCommentsIsLoading] = useState(false);
-  const [isSubmiting, setIsSubmiting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<Errors>(Errors.Empty);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [displayNewCommentForm, setDisplayNewCommentForm] = useState(false);
   const [displayCommentButton, setDisplayCommentButton] = useState(false);
 
+  const [usersError, setUsersError] = useState<Errors>(Errors.Empty);
+  const [postsError, setPostsError] = useState<Errors>(Errors.Empty);
+  const [commentsError, setCommentsError] = useState<Errors>(Errors.Empty);
+  const [addCommentError, setAddCommentError] = useState<Errors>(Errors.Empty);
+
   //#region loads
   function loadUsers() {
+    setUsersError(Errors.Empty);
+
     postsService
       .getUsers()
       .then(resolve => setUsers(resolve))
       .catch(() => {
-        setErrorMessage(Errors.Users);
+        setUsersError(Errors.Users);
       });
   }
 
   function loadUsersPosts(userId: number) {
     setPostsIsLoading(true);
-    setErrorMessage(Errors.Empty);
+    setPostsError(Errors.Empty);
 
     postsService
       .getUserPosts(userId)
       .then(resolve => setUserPosts(resolve))
       .catch(() => {
-        setErrorMessage(Errors.Posts);
+        setPostsError(Errors.Posts);
       })
       .finally(() => setPostsIsLoading(false));
   }
 
   function loadPostComments(postId: number) {
     setCommentsIsLoading(true);
-    setErrorMessage(Errors.Empty);
+    setCommentsError(Errors.Empty);
 
     postsService
       .getPostComments(postId)
       .then(resolve => setPostComments(resolve))
       .catch(() => {
-        setErrorMessage(Errors.Comments);
+        setCommentsError(Errors.Comments);
         setDisplayCommentButton(false);
       })
       .finally(() => setCommentsIsLoading(false));
@@ -70,8 +76,8 @@ export const App = () => {
   //#endregion
 
   function addComment(comment: Omit<Comment, 'id'>) {
-    setIsSubmiting(true);
-    setErrorMessage(Errors.Empty);
+    setIsSubmitting(true);
+    setAddCommentError(Errors.Empty);
 
     return postsService
       .addComment(comment)
@@ -79,12 +85,12 @@ export const App = () => {
         setPostComments(prev => [...prev, response]);
       })
       .catch(error => {
-        setErrorMessage(Errors.addComment);
+        setAddCommentError(Errors.addComment);
 
         throw error;
       })
       .finally(() => {
-        setIsSubmiting(false);
+        setIsSubmitting(false);
       });
   }
 
@@ -120,18 +126,20 @@ export const App = () => {
         <div className="tile is-ancestor">
           <div className="tile is-parent">
             <div className="tile is-child box is-success">
-              <div className="block">
-                <UserSelector
-                  users={users}
-                  onSelectUser={setSelectedUser}
-                  selectedUser={selectedUser}
-                  onSelectPost={setSelectedPost}
-                />
-              </div>
+              {!usersError && (
+                <div className="block">
+                  <UserSelector
+                    users={users}
+                    onSelectUser={setSelectedUser}
+                    selectedUser={selectedUser}
+                    onSelectPost={setSelectedPost}
+                  />
+                </div>
+              )}
               <MainContent
                 selectedUser={selectedUser}
                 isLoading={postsIsLoading}
-                errorMessage={errorMessage}
+                postsError={postsError}
                 userPosts={userPosts}
                 selectedPost={selectedPost}
                 setSelectedPost={setSelectedPost}
@@ -156,11 +164,12 @@ export const App = () => {
                 <PostDetails
                   post={selectedPost}
                   isLoading={commentsIsLoading}
-                  errorMessage={errorMessage}
+                  commentsError={commentsError}
+                  addCommentError={addCommentError}
                   comments={postComments}
                   displayNewCommentForm={displayNewCommentForm}
                   setDisplayNewCommentForm={setDisplayNewCommentForm}
-                  isSubmiting={isSubmiting}
+                  isSubmitting={isSubmitting}
                   onSubmit={addComment}
                   onDelete={deleteComment}
                   displayCommentButton={displayCommentButton}

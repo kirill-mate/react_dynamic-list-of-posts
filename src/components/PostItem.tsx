@@ -16,7 +16,7 @@ export const PostItem: React.FC<Props> = ({
   setDisplayNewCommentForm,
   setDisplayCommentButton,
 }) => {
-  function openOrClosePost() {
+  function handleTogglePost() {
     if (selectedPost?.id === post.id) {
       onSelectPost(null);
       setDisplayNewCommentForm(false);
@@ -41,7 +41,7 @@ export const PostItem: React.FC<Props> = ({
           className={classNames('button is-link', {
             'is-light': selectedPost?.id !== post.id,
           })}
-          onClick={openOrClosePost}
+          onClick={handleTogglePost}
         >
           {selectedPost?.id === post.id ? 'Close' : 'Open'}
         </button>

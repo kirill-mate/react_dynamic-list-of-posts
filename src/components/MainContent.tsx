@@ -7,7 +7,7 @@ import { PostsList } from './PostsList';
 type Props = {
   selectedUser: User | null;
   isLoading: boolean;
-  errorMessage: Errors;
+  postsError: Errors;
   userPosts: Post[];
   selectedPost: Post | null;
   setDisplayCommentButton: (value: boolean) => void;
@@ -18,7 +18,7 @@ type Props = {
 export const MainContent: React.FC<Props> = ({
   selectedUser,
   isLoading,
-  errorMessage,
+  postsError,
   userPosts,
   selectedPost,
   setDisplayCommentButton,
@@ -33,9 +33,9 @@ export const MainContent: React.FC<Props> = ({
         <Loader />
       ) : (
         <>
-          {errorMessage === Errors.Users ? (
+          {postsError === Errors.Posts ? (
             <div className="notification is-danger" data-cy="PostsLoadingError">
-              {errorMessage}
+              {postsError}
             </div>
           ) : selectedUser && userPosts.length === 0 ? (
             <div className="notification is-warning" data-cy="NoPostsYet">

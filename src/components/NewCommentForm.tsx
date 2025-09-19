@@ -3,13 +3,13 @@ import { useState } from 'react';
 import { Comment } from '../types/Comment';
 
 type Props = {
-  isSubmiting: boolean;
+  isSubmitting: boolean;
   onSubmit: (comment: Omit<Comment, 'id'>) => Promise<void>;
   postId: number;
 };
 
 export const NewCommentForm: React.FC<Props> = ({
-  isSubmiting,
+  isSubmitting,
   onSubmit,
   postId,
 }) => {
@@ -197,7 +197,7 @@ export const NewCommentForm: React.FC<Props> = ({
           <button
             type="submit"
             className={classNames('button is-link', {
-              'is-loading': isSubmiting,
+              'is-loading': isSubmitting,
             })}
           >
             Add
